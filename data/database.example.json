@@ -1,0 +1,55 @@
+{
+  "JOB_EXPERIENCE_CONTENT": [
+    {
+      "jobTitle": "Beispiel-Position",
+      "company": "Beispiel GmbH",
+      "url": "https://example.com",
+      "location": "Musterstadt",
+      "timePeriod": "seit 01/2025",
+      "duties": [
+        "Beispielhafte Tätigkeit 1",
+        "Beispielhafte Tätigkeit 2"
+      ]
+    }
+  ],
+  "EDUCATION_CONTENT": [
+    {
+      "institution": "Beispiel-Universität",
+      "description": "Beispiel-Studiengang",
+      "timePeriod": "10/2018 - 09/2021",
+      "duties": [
+        "Beispielhafter Schwerpunkt"
+      ]
+    }
+  ],
+  "PROJECT_DESCRIPTION_STRATEGO": [
+    "Beschreibung: Beispielprojekt A",
+    "Arbeitsumfang: ca. 100 Stunden",
+    "Techstack: React; TypeScript"
+  ],
+  "PROJECT_DESCRIPTION_ECO": [
+    "Beschreibung: Beispielprojekt B",
+    "Arbeitsumfang: ca. 120 Stunden",
+    "Techstack: Node.js; Express"
+  ],
+  "PROJECT_URLS": {
+    "stratego": "https://example.com/a",
+    "eco": "https://example.com/b",
+    "eca": "https://example.com/c",
+    "website": "https://example.com/d",
+    "travelblog": "https://example.com/e"
+  },
+  "INFO_TEXT_LEBENSWEG": {
+    "text": "Beispielhafter Beschreibungstext für den persönlichen Werdegang."
+  },
+  "SOCIAL_MEDIA_ITEMS": [
+    {
+      "URL": "https://github.com/example",
+      "LOGO": "GitHub_Icon.svg"
+    },
+    {
+      "URL": "https://linkedin.com/in/example",
+      "LOGO": "LinkedIn_Icon.svg"
+    }
+  ]
+}

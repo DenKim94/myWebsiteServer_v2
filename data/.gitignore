@@ -1,0 +1,5 @@
+# Host-provided runtime data must never be committed.
+# Only the example database and this file are tracked (see root .gitignore).
+*
+!.gitignore
+!database.example.json
