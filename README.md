@@ -28,16 +28,21 @@ npm install
 
 ### Data directory
 
-The server reads the database and images from a data directory, resolved in this
-order:
+The server reads the database and images from a data directory:
 
-1. `DATA_DIR` from `.env` (if set)
-2. `../harness/assets` (local development — the host data lives here)
-3. `./data` (ships with `database.example.json`)
+1. `DATA_DIR` from `.env` (absolute, or relative to the server root), if set.
+2. Otherwise the default `./data`.
 
-The real host data (`harness/assets/**`) is **never** committed. For local
-development the auto-detection uses it directly. For an isolated run, leave
-`DATA_DIR` empty and the bundled `database.example.json` is used.
+Within the resolved directory:
+
+- If `database.json` (or `database.<lang>.json`) is missing, the bundled
+  `database.example.json` is used as a placeholder.
+- Images and icons are served from `./data/images` and `./data/icons`.
+- If `./data/images` is missing or contains no matching photos, the API returns
+  an **empty** `about.images` list and the client hides the photo slider.
+
+The real host data in `./data` (database + images) is **never** committed —
+only the `*.example.json` files are tracked (see `data/.gitignore`).
 
 ## Scripts
 

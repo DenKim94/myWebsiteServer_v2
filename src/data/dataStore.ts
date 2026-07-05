@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { logger } from '../config/logger';
-import { DATA_DIR } from './paths';
+import { DATA_DIR, IMAGES_DIR } from './paths';
 import { sanitizeJsonText } from './sanitizeJson';
 import {
   DEFAULT_LANGUAGE,
@@ -27,6 +27,7 @@ const PROJECT_MAP: Record<
   string,
   { id: string; title: Record<Language, string>; urlKey: string; logo: string }
 > = {
+  PROJECT_DESCRIPTION_WEBSITE_V2: { id: 'website-v2', title: { de: 'Portfolio-Webseite 2.0', en: 'Portfolio Website 2.0' }, urlKey: 'website-v2', logo: 'myWebLogo.ico' },
   PROJECT_DESCRIPTION_STRATEGO: { id: 'stratego', title: { de: 'Stratego', en: 'Stratego' }, urlKey: 'stratego', logo: 'strategoLogo.png' },
   PROJECT_DESCRIPTION_ECA: { id: 'eca', title: { de: 'ECA', en: 'ECA' }, urlKey: 'eca', logo: 'ecaLogo.png' },
   PROJECT_DESCRIPTION_ECO: { id: 'eco', title: { de: 'ECO', en: 'ECO' }, urlKey: 'eco', logo: 'eco_app_v2.png' },
@@ -34,16 +35,66 @@ const PROJECT_MAP: Record<
   PROJECT_DESCRIPTION_TRAVELBLOG: { id: 'travelblog', title: { de: 'Travel-Blog', en: 'Travel-Blog' }, urlKey: 'travelblog', logo: 'travelBlogLogo.png' },
 };
 
-/** Image file names used by the "about me" / Lebensweg section. */
-const ABOUT_IMAGES = [
-  'IMG_LEBENSWEG_01.png',
-  'IMG_LEBENSWEG_02.png',
-  'IMG_LEBENSWEG_03.png',
-  'IMG_LEBENSWEG_04.jpeg',
-];
+/**
+ * File-name prefix (case-insensitive) of the "about me" / Lebensweg photos.
+ * The photos are discovered dynamically from the images directory so the data
+ * layer stays backend-driven: when the host provides no images, the client
+ * hides the photo slider entirely.
+ */
+const ABOUT_IMAGE_PREFIX = 'IMG_LEBENSWEG';
+
+/** Accepted file extensions for the Lebensweg photos. */
+const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp', '.gif'];
 
 /** In-memory cache of the normalized portfolio, keyed by language (lazy). */
 const cachedPortfolios = new Map<Language, Portfolio>();
+
+/** Lazily resolved list of discovered about-me image file names. */
+let cachedAboutImages: string[] | null = null;
+
+/**
+ * Filters and orders a list of file names down to the "about me" / Lebensweg
+ * photos (by prefix + accepted image extension). Pure function — extracted for
+ * unit testing.
+ * @param fileNames Raw directory entries.
+ * @returns Matching image file names, sorted naturally (may be empty).
+ */
+export function filterAboutImages(fileNames: string[]): string[] {
+  return fileNames
+    .filter((name) => {
+      const lower = name.toLowerCase();
+      return (
+        lower.startsWith(ABOUT_IMAGE_PREFIX.toLowerCase()) &&
+        IMAGE_EXTENSIONS.some((ext) => lower.endsWith(ext))
+      );
+    })
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+/**
+ * Discovers the "about me" photo file names that are actually present in the
+ * images directory (`<DATA_DIR>/images`). Returns an empty array when the
+ * directory is missing or contains no matching image files, so the API sends an
+ * empty `about.images` list and the client can omit the photo slider.
+ * @returns Sorted list of image file names (may be empty).
+ */
+function resolveAboutImages(): string[] {
+  if (cachedAboutImages) return cachedAboutImages;
+
+  let images: string[] = [];
+  try {
+    images = filterAboutImages(fs.readdirSync(IMAGES_DIR));
+  } catch {
+    // Directory does not exist / is not readable → no photos available.
+    images = [];
+  }
+
+  if (images.length === 0) {
+    logger.warn(`No Lebensweg images found in ${IMAGES_DIR} — photo slider will be hidden.`);
+  }
+  cachedAboutImages = images;
+  return images;
+}
 
 /**
  * Builds the host + example database file names for a given language.
@@ -184,7 +235,7 @@ export function getPortfolio(lang: Language = DEFAULT_LANGUAGE): Portfolio {
 
   const about: About = {
     text: db.INFO_TEXT_LEBENSWEG?.text ?? '',
-    images: ABOUT_IMAGES,
+    images: resolveAboutImages(),
   };
 
   const social: SocialLink[] = (db.SOCIAL_MEDIA_ITEMS ?? []).map((item) => ({
@@ -203,4 +254,5 @@ export function getPortfolio(lang: Language = DEFAULT_LANGUAGE): Portfolio {
 /** Clears the in-memory cache (useful for tests / hot data reloads). */
 export function clearCache(): void {
   cachedPortfolios.clear();
+  cachedAboutImages = null;
 }
