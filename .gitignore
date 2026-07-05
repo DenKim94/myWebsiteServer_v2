@@ -1,3 +1,4 @@
+.DS_Store
 node_modules/
 dist/
 coverage/
@@ -5,4 +6,3 @@ coverage/
 .env
 .env.local
 !.env.example
-.DS_Store
