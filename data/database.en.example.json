@@ -1,0 +1,55 @@
+{
+  "JOB_EXPERIENCE_CONTENT": [
+    {
+      "jobTitle": "Example Position",
+      "company": "Example Ltd.",
+      "url": "https://example.com",
+      "location": "Sample City",
+      "timePeriod": "since 01/2025",
+      "duties": [
+        "Example responsibility 1",
+        "Example responsibility 2"
+      ]
+    }
+  ],
+  "EDUCATION_CONTENT": [
+    {
+      "institution": "Example University",
+      "description": "Example programme",
+      "timePeriod": "10/2018 - 09/2021",
+      "duties": [
+        "Example focus"
+      ]
+    }
+  ],
+  "PROJECT_DESCRIPTION_STRATEGO": [
+    "Beschreibung: Example project A",
+    "Arbeitsumfang: approx. 100 hours",
+    "Techstack: React; TypeScript"
+  ],
+  "PROJECT_DESCRIPTION_ECO": [
+    "Beschreibung: Example project B",
+    "Arbeitsumfang: approx. 120 hours",
+    "Techstack: Node.js; Express"
+  ],
+  "PROJECT_URLS": {
+    "stratego": "https://example.com/a",
+    "eco": "https://example.com/b",
+    "eca": "https://example.com/c",
+    "website": "https://example.com/d",
+    "travelblog": "https://example.com/e"
+  },
+  "INFO_TEXT_LEBENSWEG": {
+    "text": "Example description text for the personal journey."
+  },
+  "SOCIAL_MEDIA_ITEMS": [
+    {
+      "URL": "https://github.com/example",
+      "LOGO": "GitHub_Icon.svg"
+    },
+    {
+      "URL": "https://linkedin.com/in/example",
+      "LOGO": "LinkedIn_Icon.svg"
+    }
+  ]
+}

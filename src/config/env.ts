@@ -42,7 +42,7 @@ export const env = {
     password: readEnv('SMTP_PASSWORD', ''),
   },
   mail: {
-    to: readEnv('MAIL_TO', 'den.kim2207@gmail.com'),
+    to: readEnv('MAIL_TO', ''),
     from: readEnv('MAIL_FROM', 'no-reply@denis-kim.dev'),
   },
 } as const;

@@ -6,6 +6,26 @@
  * REST API (produced by the data layer / "Datenaufbereitung").
  */
 
+/** Supported content languages. `de` is the default / fallback language. */
+export type Language = 'de' | 'en';
+
+/** All supported languages in resolution order. */
+export const SUPPORTED_LANGUAGES: readonly Language[] = ['de', 'en'] as const;
+
+/** Default language used when none is requested or an unknown one is given. */
+export const DEFAULT_LANGUAGE: Language = 'de';
+
+/**
+ * Narrows an arbitrary value to a supported {@link Language}.
+ * @param value Candidate language string (e.g. from a query parameter).
+ * @returns The matching language or {@link DEFAULT_LANGUAGE} as a fallback.
+ */
+export function toLanguage(value: unknown): Language {
+  return SUPPORTED_LANGUAGES.includes(value as Language)
+    ? (value as Language)
+    : DEFAULT_LANGUAGE;
+}
+
 /** Raw job-experience entry as stored in the host database. */
 export interface RawJobExperience {
   jobTitle: string;
