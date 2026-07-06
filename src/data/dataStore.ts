@@ -28,11 +28,11 @@ const PROJECT_MAP: Record<
   { id: string; title: Record<Language, string>; urlKey: string; logo: string }
 > = {
   PROJECT_DESCRIPTION_WEBSITE_V2: { id: 'website-v2', title: { de: 'Portfolio-Webseite 2.0', en: 'Portfolio Website 2.0' }, urlKey: 'website-v2', logo: 'myWebLogoV2.svg' },
-  PROJECT_DESCRIPTION_TRAVELBLOG: { id: 'travelblog', title: { de: 'Travel-Blog', en: 'Travel-Blog' }, urlKey: 'travelblog', logo: 'travelBlogLogo.png' },
   PROJECT_DESCRIPTION_ECO: { id: 'eco', title: { de: 'ECO', en: 'ECO' }, urlKey: 'eco', logo: 'eco_app_v2.png' },
+  PROJECT_DESCRIPTION_TRAVELBLOG: { id: 'travelblog', title: { de: 'Travel-Blog', en: 'Travel-Blog' }, urlKey: 'travelblog', logo: 'travelBlogLogo.png' },
   PROJECT_DESCRIPTION_STRATEGO: { id: 'stratego', title: { de: 'Stratego', en: 'Stratego' }, urlKey: 'stratego', logo: 'strategoLogo.png' },
-  PROJECT_DESCRIPTION_ECA: { id: 'eca', title: { de: 'ECA', en: 'ECA' }, urlKey: 'eca', logo: 'ecaLogo.png' },
   PROJECT_DESCRIPTION_WEBSITE: { id: 'website', title: { de: 'Portfolio-Webseite', en: 'Portfolio Website' }, urlKey: 'website', logo: 'myWebLogo.ico' },
+  PROJECT_DESCRIPTION_ECA: { id: 'eca', title: { de: 'ECA', en: 'ECA' }, urlKey: 'eca', logo: 'ecaLogo.png' },
 };
 
 /**
