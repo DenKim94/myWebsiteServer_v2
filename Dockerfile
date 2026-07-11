@@ -35,3 +35,13 @@ EXPOSE 3001
 USER node
 
 CMD ["node", "dist/index.js"]
+
+# ---- Test stage ----
+# Runs the unit test suite (vitest). Selected via docker-compose (`target: test`).
+# Reuses the build stage, which already has all (incl. dev) dependencies and the
+# TypeScript sources; only the tests are added. The suite is self-contained
+# (pure functions) and needs no mounted data volume.
+FROM build AS test
+ENV NODE_ENV=test
+COPY tests ./tests
+CMD ["npm", "test"]
