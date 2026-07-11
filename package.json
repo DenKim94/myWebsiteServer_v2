@@ -1,6 +1,6 @@
 {
   "name": "portfolio-server",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Backend (Node.js + TypeScript) for the personal portfolio website. Provides REST endpoints for portfolio data, images and an e-mail contact service.",
   "type": "commonjs",
   "main": "dist/index.js",
