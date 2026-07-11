@@ -1,4 +1,6 @@
+# macOS Finder-Metadaten – rekursiv (Muster ohne Slash greift in jedem Unterordner)
 .DS_Store
+**/.DS_Store
 node_modules/
 dist/
 coverage/
