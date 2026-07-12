@@ -31,7 +31,7 @@ const MESSAGES: Record<Language, Record<MessageKey, string>> = {
     captchaMissing: 'Captcha-Token fehlt.',
     captchaFailed: 'Captcha-Prüfung fehlgeschlagen.',
     successDryRun: 'Nachricht angenommen (Dry-Run: kein SMTP konfiguriert).',
-    success: 'Nachricht wurde erfolgreich versendet.',
+    success: 'Nachricht wurde erfolgreich gesendet.',
   },
   en: {
     invalidBody: 'Invalid request body.',
