@@ -106,4 +106,11 @@ export interface Portfolio {
   education: Education[];
   projects: Project[];
   social: SocialLink[];
+  /**
+   * Content-version token per servable image file name (derived from the file's
+   * size + mtime). The client appends it to the image URL as a `?v=` cache-buster
+   * so a changed image is fetched fresh even though images are served with a
+   * long-lived, immutable `Cache-Control`.
+   */
+  imageVersions: Record<string, string>;
 }

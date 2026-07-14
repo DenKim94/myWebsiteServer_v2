@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { logger } from '../config/logger';
-import { DATA_DIR, IMAGES_DIR } from './paths';
+import { DATA_DIR, IMAGES_DIR, ICONS_DIR } from './paths';
 import { sanitizeJsonText } from './sanitizeJson';
 import {
   DEFAULT_LANGUAGE,
@@ -51,6 +51,66 @@ const cachedPortfolios = new Map<Language, Portfolio>();
 
 /** Lazily resolved list of discovered about-me image file names. */
 let cachedAboutImages: string[] | null = null;
+
+/** Lazily computed content-version token per servable image file name. */
+let cachedImageVersions: Record<string, string> | null = null;
+
+/**
+ * Directories scanned for image-version tokens, in the same precedence order as
+ * the image controller resolves a requested file name (images/ before icons/).
+ */
+const VERSIONED_IMAGE_DIRS = [IMAGES_DIR, ICONS_DIR];
+
+/**
+ * Builds a short, stable content-version token from a file's size and mtime.
+ * The token changes whenever either value changes (i.e. the file content was
+ * replaced). Pure function — extracted for unit testing.
+ * @param sizeBytes File size in bytes.
+ * @param mtimeMs Last-modified time in milliseconds since the epoch.
+ * @returns Version token, e.g. `"4952b-19f61e94696"`.
+ */
+export function imageVersionToken(sizeBytes: number, mtimeMs: number): string {
+  return `${Math.max(0, Math.floor(sizeBytes)).toString(36)}-${Math.max(0, Math.floor(mtimeMs)).toString(36)}`;
+}
+
+/**
+ * Computes a short content-version token for every servable image file, keyed by
+ * file name. The token is derived from the file's size and mtime, so it changes
+ * whenever the file content changes. The client appends it to the image URL as a
+ * `?v=` cache-buster: the image itself stays long-lived / immutable in caches,
+ * but a replaced file yields a new URL and is therefore fetched fresh.
+ *
+ * First occurrence wins to mirror the image controller's directory precedence;
+ * hidden files (e.g. `.DS_Store`) are skipped. Pure I/O helper — cached in
+ * memory and refreshed on {@link clearCache} / process restart (i.e. on deploy).
+ * @returns Map of image file name → version token (may be empty).
+ */
+export function resolveImageVersions(): Record<string, string> {
+  if (cachedImageVersions) return cachedImageVersions;
+
+  const versions: Record<string, string> = {};
+  for (const dir of VERSIONED_IMAGE_DIRS) {
+    let entries: string[] = [];
+    try {
+      entries = fs.readdirSync(dir);
+    } catch {
+      continue; // directory missing / unreadable
+    }
+    for (const name of entries) {
+      if (name.startsWith('.') || name in versions) continue; // skip hidden; keep first match
+      try {
+        const stat = fs.statSync(path.join(dir, name));
+        if (!stat.isFile()) continue;
+        versions[name] = imageVersionToken(stat.size, stat.mtimeMs);
+      } catch {
+        // ignore an individual unreadable entry
+      }
+    }
+  }
+
+  cachedImageVersions = versions;
+  return versions;
+}
 
 /**
  * Filters and orders a list of file names down to the "about me" / Lebensweg
@@ -243,7 +303,14 @@ export function getPortfolio(lang: Language = DEFAULT_LANGUAGE): Portfolio {
     logo: item.LOGO,
   }));
 
-  const portfolio: Portfolio = { about, experience, education, projects, social };
+  const portfolio: Portfolio = {
+    about,
+    experience,
+    education,
+    projects,
+    social,
+    imageVersions: resolveImageVersions(),
+  };
   cachedPortfolios.set(lang, portfolio);
   logger.info(
     `Portfolio (${lang}) loaded: ${experience.length} jobs, ${education.length} education, ${projects.length} projects.`,
@@ -255,4 +322,5 @@ export function getPortfolio(lang: Language = DEFAULT_LANGUAGE): Portfolio {
 export function clearCache(): void {
   cachedPortfolios.clear();
   cachedAboutImages = null;
+  cachedImageVersions = null;
 }
