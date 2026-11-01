@@ -1,6 +1,6 @@
 # ---- Build stage ----
 # Multi-stage build. Works on the Raspberry Pi 5 (arm64) as the node image is multi-arch.
-FROM node:22-bookworm-slim AS build
+FROM node:24.22.2-bookworm-slim AS build
 WORKDIR /app
 
 # Install dependencies (leverages layer caching)
@@ -31,7 +31,7 @@ CMD ["npm", "test"]
 
 # ---- Runtime stage ----
 # Final (default) stage: the production server image.
-FROM node:22-bookworm-slim AS runtime
+FROM node:24.22.2-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
